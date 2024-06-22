@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package FoosballProto;
+
+import "transform_proto.proto";
+
+message FoosballInfo {
+    repeated TransformProto.LOCALTRANSFORM all_transforms = 1;
+}

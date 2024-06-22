@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package ClientMessagesProto;
+
+import "transform_proto.proto";
+
+message LWPos {
+    uint64 TimeStamp = 1;
+    TransformProto.LOCALTRANSFORM LControllerTransform = 2;
+    TransformProto.LOCALTRANSFORM RControllerTransform = 3;
+}
+
+message LWAxes {
+    uint64 TimeStamp = 1;
+    TransformProto.VECTOR2 LThumbStick = 2;
+    TransformProto.VECTOR2 RThumbStick = 3;
+}
+
+message LWINPUT {
+    bytes UUID = 1;
+    int32 UpMask = 2;
+    int32 DownMask = 3;
+}
+

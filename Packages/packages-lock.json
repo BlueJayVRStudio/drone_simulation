@@ -1,11 +1,10 @@
 {
   "dependencies": {
     "com.bluejayvrstudio.utils": {
-      "version": "https://github.com/BlueJayVRStudio/BlueJayUtils.git",
+      "version": "file:com.bluejayvrstudio.utils@626d7d0696",
       "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "626d7d0696c98976082101b9642d3087dc313db7"
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.meta.xr.sdk.core": {
       "version": "64.0.0",

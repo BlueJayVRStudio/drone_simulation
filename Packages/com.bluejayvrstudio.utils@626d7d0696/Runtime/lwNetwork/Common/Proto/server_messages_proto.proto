@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package ServerMessagesProto;
+
+message NetworkObjectID {
+    bytes UUID = 1;
+    string Name = 2;
+}
+
+message NetworkCollection {
+    uint64 TimeStamp = 1;
+    repeated NetworkObjectID Collection = 2;
+}
+
+message NetworkObject {
+    bytes UUID = 1;
+    uint64 TimeStamp = 2;
+    bytes SerializedInfo = 3;
+}
+
+message ACK {
+    bytes UUID = 1;
+}

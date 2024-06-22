@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package SampleProto;
+
+enum SomeEnum {
+    BLUE = 0;
+    RED = 1;
+    GREEN = 2;
+}
+
+message SAMPLE {
+    float X = 1;
+    uint32 Y = 2;
+    uint64 Z = 3;
+    string Name = 4;
+    bytes Serialized = 5;
+    SomeEnum Color = 6;
+}
+
+message SAMPLES {
+    repeated SAMPLE LeSamples = 1;
+}
