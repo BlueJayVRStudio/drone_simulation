@@ -2617,7 +2617,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 96
+  m_Constraints: 0
   m_CollisionDetection: 2
 --- !u!33 &799008334
 MeshFilter:
@@ -2640,8 +2640,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1936072077}
   - {fileID: 880879067}
+  - {fileID: 1936072077}
   - {fileID: 1384321869}
   - {fileID: 1001359850}
   - {fileID: 481905245}
@@ -2666,10 +2666,11 @@ MonoBehaviour:
   altitudeSetpoint: 0
   xPositionSetpoint: 0
   yPositionSetpoint: 0
-  Blades1: {fileID: 1936072079}
-  Blades2: {fileID: 880879068}
-  Blades3: {fileID: 1384321870}
-  Blades4: {fileID: 1001359851}
+  FR: {fileID: 880879068}
+  FL: {fileID: 1936072079}
+  BR: {fileID: 1384321870}
+  BL: {fileID: 1001359851}
+  printAngles: 0
 --- !u!1 &802632904
 GameObject:
   m_ObjectHideFlags: 0
@@ -3084,7 +3085,7 @@ GameObject:
   - component: {fileID: 880879069}
   - component: {fileID: 880879068}
   m_Layer: 0
-  m_Name: Blades2
+  m_Name: FR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3113,14 +3114,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 880879066}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 558f3782b32bbfe4aada3f242d0aa7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 799008333}
-  magnitude: 0.17
-  isNormal: 0
+  magnitude: 0
 --- !u!114 &880879069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3781,7 +3781,7 @@ GameObject:
   - component: {fileID: 1001359852}
   - component: {fileID: 1001359851}
   m_Layer: 0
-  m_Name: Blades4
+  m_Name: BL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3810,14 +3810,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1001359849}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 558f3782b32bbfe4aada3f242d0aa7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 799008333}
-  magnitude: 0.17
-  isNormal: 0
+  magnitude: 0
 --- !u!114 &1001359852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5096,7 +5095,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 1860000356}
   magnitude: 0.0928
-  isNormal: 0
 --- !u!114 &1340583769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5138,7 +5136,7 @@ GameObject:
   - component: {fileID: 1384321871}
   - component: {fileID: 1384321870}
   m_Layer: 0
-  m_Name: Blades3
+  m_Name: BR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5167,14 +5165,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1384321868}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 558f3782b32bbfe4aada3f242d0aa7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 799008333}
-  magnitude: 0.17
-  isNormal: 0
+  magnitude: 0
 --- !u!114 &1384321871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5327,7 +5324,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 1860000356}
   magnitude: 0.09
-  isNormal: 0
 --- !u!114 &1438198815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5662,7 +5658,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 1860000356}
   magnitude: 0.09
-  isNormal: 0
 --- !u!114 &1655038468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6665,10 +6660,11 @@ MonoBehaviour:
   altitudeSetpoint: 0
   xPositionSetpoint: 0
   yPositionSetpoint: 0
-  Blades1: {fileID: 1340583768}
-  Blades2: {fileID: 2065538239}
-  Blades3: {fileID: 1655038467}
-  Blades4: {fileID: 1438198814}
+  FR: {fileID: 0}
+  FL: {fileID: 0}
+  BR: {fileID: 0}
+  BL: {fileID: 0}
+  printAngles: 0
 --- !u!54 &1860000356
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6902,7 +6898,7 @@ GameObject:
   - component: {fileID: 1936072078}
   - component: {fileID: 1936072079}
   m_Layer: 0
-  m_Name: Blades1
+  m_Name: FL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6944,14 +6940,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1936072076}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 558f3782b32bbfe4aada3f242d0aa7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 799008333}
-  magnitude: 0.17
-  isNormal: 0
+  magnitude: 0
 --- !u!1 &1970627835
 GameObject:
   m_ObjectHideFlags: 0
@@ -7336,7 +7331,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 1860000356}
   magnitude: 0.0928
-  isNormal: 0
 --- !u!114 &2065538240
 MonoBehaviour:
   m_ObjectHideFlags: 0

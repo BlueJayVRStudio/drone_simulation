@@ -6,6 +6,8 @@ using bluejayvrstudio;
 // WIP
 public class DroneController : MonoBehaviour
 {
+    Rigidbody rb;
+
     // PID Controllers
     public PIDController rollPID;
     public PIDController pitchPID;
@@ -36,25 +38,26 @@ public class DroneController : MonoBehaviour
     private float deltaTime;
 
     // Motors
-    public BladesAddForce Blades1;
-    public BladesAddForce Blades2;
-    public BladesAddForce Blades3;
-    public BladesAddForce Blades4;
+    public BladesAddForce FR;
+    public BladesAddForce FL;
+    public BladesAddForce BR;
+    public BladesAddForce BL;
 
-
-    float Kp = 100f;
+    float Kp = .3f;
     float Ki = 0f;
-    float Kd = 1f;
+    float Kd = .3f;
 
+    public bool printAngles;
 
     void Start()
     {
+        rb = transform.GetComponent<Rigidbody>();
         rollPID = new PIDController(Kp, Ki, Kd);
         pitchPID = new PIDController(Kp, Ki, Kd);
         yawPID = new PIDController(Kp, Ki, Kd);
-        thrustPID = new PIDController(10f, 0f, 10f);
+        thrustPID = new PIDController(Kp, Ki, Kd);
         xPositionPID = new PIDController(Kp, Ki, Kd);
-        yPositionPID = new PIDController(1000, 0, 10); 
+        yPositionPID = new PIDController(Kp, Ki, Kd);
     }
 
     void Update()
@@ -64,28 +67,29 @@ public class DroneController : MonoBehaviour
         UpdateSensorValues();
 
         // Compute control signals using PID controllers
-        float rollControlSignal ;
-        float pitchControlSignal;
-        rollControlSignal = rollPID.Update(rollSetpoint, measuredRoll, deltaTime);
-        pitchControlSignal = pitchPID.Update(pitchSetpoint, measuredPitch, deltaTime);
+        float rollControlSignal = rollPID.Update(rollSetpoint, measuredRoll, deltaTime);
+        float pitchControlSignal = pitchPID.Update(pitchSetpoint, measuredPitch, deltaTime);
         float yawControlSignal = yawPID.Update(yawSetpoint, measuredYaw, deltaTime);
         float thrustControlSignal = thrustPID.Update(altitudeSetpoint, measuredAltitude, deltaTime);
+
+        float xControlSignal = xPositionPID.Update(xPositionSetpoint, measuredXPosition, deltaTime);
+        float yControlSignal = xPositionPID.Update(yPositionSetpoint, measuredYPosition, deltaTime);
+
+        float xAdjustment = ConvertXPositionToRoll(xControlSignal, yControlSignal, measuredYaw);
+        float yAdjustment = ConvertYPositionToPitch(xControlSignal, yControlSignal, measuredYaw);
+
+        // rollControlSignal += xAdjustment;
+        // pitchControlSignal += yAdjustment;
+
+        float _FR = thrustControlSignal + rollControlSignal + pitchControlSignal + yawControlSignal;
+        float _FL = thrustControlSignal - rollControlSignal + pitchControlSignal - yawControlSignal;
+        float _BR = thrustControlSignal + rollControlSignal - pitchControlSignal - yawControlSignal;
+        float _BL = thrustControlSignal - rollControlSignal - pitchControlSignal + yawControlSignal;
         
-        var go = new GameObject();
-        go.transform.position = new Vector3(xPositionSetpoint, 0.0f, yPositionSetpoint);
-        Vector3 relativePos = CustomM.GetRelativePosition(go, gameObject);
+        SetMotorSpeeds(_FR, _FL, _BR, _BL);
+        rb.AddTorque(((_FR+_BL) - (_FL+_BR)) * Vector3.up);
 
-        rollSetpoint = Mathf.Clamp(xPositionPID.Update(0, ConvertXPositionToRoll(), deltaTime), -60, 60);
-        pitchSetpoint = yPositionPID.Update(0, ConvertYPositionToPitch(), deltaTime);
-        print(ConvertXPositionToRoll());
-        Destroy(go);
-
-        transform.GetComponent<Rigidbody>().AddTorque(yawControlSignal * Vector3.up);
-        transform.GetComponent<Rigidbody>().AddRelativeTorque(-pitchControlSignal * Vector3.right);
-        transform.GetComponent<Rigidbody>().AddRelativeTorque(-rollControlSignal * Vector3.forward);
-        transform.GetComponent<Rigidbody>().AddForceAtPosition(Mathf.Clamp(thrustControlSignal, 0, 50f) * transform.up, transform.position, ForceMode.Force);
-
-        // Debug.Log($"measured roll: {measuredRoll}, measured pitch: {measuredPitch}, measured yaw: {measuredYaw}");
+        if (printAngles) Debug.Log($"measured roll: {measuredRoll}, measured pitch: {measuredPitch}, measured yaw: {measuredYaw}");
     }
 
     void UpdateSensorValues()
@@ -141,24 +145,43 @@ public class DroneController : MonoBehaviour
     float GetYPositionFromSensor() => transform.position.z;
 
 
-    float ConvertXPositionToRoll()
+    // float ConvertXPositionToRoll()
+    // {
+    //     var go = new GameObject();
+    //     go.transform.position = new Vector3(xPositionSetpoint, 0.0f, yPositionSetpoint);
+    //     Vector3 relativePos = CustomM.GetRelativePosition(go, gameObject);
+    //     Destroy(go);
+    //     return relativePos.x;
+    // }
+
+    // float ConvertYPositionToPitch()
+    // {
+    //     var go = new GameObject();
+    //     go.transform.position = new Vector3(xPositionSetpoint, 0.0f, yPositionSetpoint);
+    //     Vector3 relativePos = CustomM.GetRelativePosition(go, gameObject);
+    //     Destroy(go);
+    //     return relativePos.z;
+    // }
+
+    void SetMotorSpeeds(float _FR, float _FL, float _BR, float _BL)
     {
-        var go = new GameObject();
-        go.transform.position = new Vector3(xPositionSetpoint, 0.0f, yPositionSetpoint);
-        Vector3 relativePos = CustomM.GetRelativePosition(go, gameObject);
-        Destroy(go);
-        // return Mathf.Clamp(relativePos.x + Mathf.Cos(xPositionSignal), -160f, 160f);
-        return Mathf.Clamp(relativePos.x, -160f, 160f);
+        FR.magnitude = _FR;
+        FL.magnitude = _FL;
+        BR.magnitude = _BR;
+        BL.magnitude = _BL;
     }
 
-    float ConvertYPositionToPitch()
+    float ConvertXPositionToRoll(float xControlSignal, float yControlSignal, float yaw)
     {
-        var go = new GameObject();
-        go.transform.position = new Vector3(xPositionSetpoint, 0.0f, yPositionSetpoint);
-        Vector3 relativePos = CustomM.GetRelativePosition(go, gameObject);
-        Destroy(go);
-        // Debug.Log(Mathf.Clamp(-relativePos.z, -30.0f, 30.0f));
-        // return Mathf.Clamp(-relativePos.z + Mathf.Sin(yPositionSignal), -160f, 160f);
-        return Mathf.Clamp(-relativePos.z, -160f, 160f);
+        // Convert x position control signal to roll adjustment using the yaw angle
+        float radYaw = yaw * Mathf.Deg2Rad;
+        return xControlSignal * Mathf.Cos(90-radYaw) - yControlSignal * Mathf.Sin(90-radYaw);
+    }
+
+    float ConvertYPositionToPitch(float xControlSignal, float yControlSignal, float yaw)
+    {
+        // Convert y position control signal to pitch adjustment using the yaw angle
+        float radYaw = yaw * Mathf.Deg2Rad;
+        return yControlSignal * Mathf.Cos(90-radYaw) + xControlSignal * Mathf.Sin(90-radYaw);
     }
 }
